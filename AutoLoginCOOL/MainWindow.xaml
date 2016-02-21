@@ -3,18 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmd="clr-namespace:AutoLoginViewModel;assembly=AutoLoginViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Width="525" SizeToContent="Height">
+        Title="MainWindow" Width="525" SizeToContent="Height" Loaded="MainWindow_OnLoaded"
+        d:DataContext="{d:DesignInstance vmd:LoginInfo}">
 
     <Window.Resources>
-        <GridLength x:Key="ColumnWidth">10</GridLength>
+        <GridLength x:Key="ColumnWidth">100</GridLength>
 
         <Thickness x:Key="NormarMargin">8</Thickness>
 
         <Style TargetType="Button">
             <Setter Property="HorizontalAlignment" Value="Right" />
             <Setter Property="Margin" Value="{StaticResource NormarMargin}" />
-            <Setter Property="Width" Value="120" />
+            <Setter Property="Width" Value="110" />
+        </Style>
+
+        <Style x:Key="ButtonAddStyle" TargetType="Button">
+            <Setter Property="Margin" Value="{StaticResource NormarMargin}" />
+            <Setter Property="Width" Value="30" />
         </Style>
 
         <Style TargetType="TextBlock">
@@ -30,6 +37,8 @@
         <Style TargetType="ComboBox" BasedOn="{StaticResource InputStyle}" />
 
         <Style TargetType="PasswordBox" BasedOn="{StaticResource InputStyle}" />
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource InputStyle}" />
     </Window.Resources>
 
     <Grid>
@@ -51,20 +60,31 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Website:" />
-            <ComboBox Grid.Row="0" Grid.Column="1" />
+            <ComboBox x:Name="lstWebsites" Grid.Row="0" Grid.Column="1" IsEditable="True"
+                      ItemsSource="{Binding Websites}" DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedWebsite}" />
+            <Button x:Name="cmdAddWebsite" Grid.Row="0" Grid.Column="2" Content="+"
+                    Style="{StaticResource ButtonAddStyle}" Click="CmdAddWebsite_OnClick" />
 
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Acount:" />
-            <ComboBox Grid.Row="1" Grid.Column="1" />
+            <ComboBox x:Name="lstAccounts" Grid.Row="1" Grid.Column="1" IsEditable="True"
+                      ItemsSource="{Binding SelectedWebsite.Accounts}" DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedAccount}" />
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Password:" />
-            <PasswordBox Grid.Row="2" Grid.Column="1" />
+            <PasswordBox x:Name="txtPassword" Grid.Row="2" Grid.Column="1" />
 
-            <Button Grid.Row="3" Grid.Column="1" x:Name="cmdGo" Content="Go" />
-            
-            <Button Grid.Row="4" Grid.Column="1" x:Name="cmdAdd" Content="Add" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Description:" />
+            <TextBox x:Name="txtDescription" Grid.Row="3" Grid.Column="1"
+                     Text="{Binding SelectedAccount.Description}" />
+            <Button x:Name="cmdAddAccount" Grid.Row="3" Grid.Column="2" Content="+"
+                    Style="{StaticResource ButtonAddStyle}" Click="CmdAddAccount_OnClick" />
+
+            <Button Grid.Row="4" Grid.Column="1" x:Name="cmdGo" Content="Go" />
         </Grid>
     </Grid>
 </Window>
